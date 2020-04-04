@@ -6,7 +6,6 @@ import (
   "net/http"
   "go.opencensus.io/plugin/ochttp"
 
-  "github.com/davecgh/go-spew/spew"
   "github.com/fbessez/orgContributions/github"
 )
 
@@ -23,7 +22,7 @@ func getOrgStats(w http.ResponseWriter, req *http.Request) {
 	ctx := req.Context()
 	githubClient := newGithubClient()
 
-	resp, err := githubClient.GetOrg(ctx)
+	_, err := githubClient.GetOrg(ctx)
 	if err != nil {
 		fmt.Println("error getting Org", err)
 		return
