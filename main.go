@@ -14,19 +14,21 @@ const (
 	port = ":8090"
 )
 
-func newClient() *github.GithubClientImpl {
+func newGithubClient() *github.GithubClient {
 	var httpClient = &http.Client{Transport: &ochttp.Transport{}, Timeout: 5 * time.Second}
-	return &github.GithubClientImpl{HttpClient: httpClient}
+	return &github.GithubClient{HttpClient: httpClient}
 }
 
 func getOrgStats(w http.ResponseWriter, req *http.Request) {
 	ctx := req.Context()
-	githubClient := newClient()
+	githubClient := newGithubClient()
+
 	resp, err := githubClient.GetOrg(ctx)
 	if err != nil {
-		panic(err)
+		fmt.Println("error getting Org", err)
+		return
 	}
-	spew.Dump(resp)
+
 	return
 }
 

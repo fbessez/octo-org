@@ -12,7 +12,7 @@ import (
 	"github.com/fbessez/orgContributions/config"
 )
 
-func (c *GithubClientImpl) formRequest(action string, url string) (request *http.Request, err error) {
+func (c *GithubClient) formRequest(action string, url string) (request *http.Request, err error) {
 	request, err = http.NewRequest("GET", url, nil)
 	if err != nil {
 		return nil, err
@@ -22,7 +22,7 @@ func (c *GithubClientImpl) formRequest(action string, url string) (request *http
 	return
 }
 
-func (c *GithubClientImpl) makeRequest(request *http.Request) (response *http.Response, err error) {
+func (c *GithubClient) makeRequest(request *http.Request) (response *http.Response, err error) {
 	response, err = c.HttpClient.Do(request)
 	if err != nil {
 		fmt.Println("error making http request", err)
@@ -35,7 +35,7 @@ func (c *GithubClientImpl) makeRequest(request *http.Request) (response *http.Re
 }
 
 
-func (c *GithubClientImpl) unmarshalResponse(ctx context.Context, resp *http.Response, i interface{}) (err error) {
+func (c *GithubClient) unmarshalResponse(ctx context.Context, resp *http.Response, i interface{}) (err error) {
 	defer func() {
 		if err := resp.Body.Close(); err != nil {
 			fmt.Println("error closing response body", err)
