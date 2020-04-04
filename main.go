@@ -2,16 +2,36 @@ package main
 	
 import (
 	"fmt"
+	"time"
   "net/http"
+  "go.opencensus.io/plugin/ochttp"
+
+  "github.com/davecgh/go-spew/spew"
+  "github.com/fbessez/orgContributions/github"
 )
 
-func getOrgStats(w http.ResponseWriter, req *http.Request) {
-	fmt.Fprintf(w, "hello\n")
+const (
+	port = ":8090"
+)
+
+func newClient() *github.GithubClientImpl {
+	var httpClient = &http.Client{Transport: &ochttp.Transport{}, Timeout: 5 * time.Second}
+	return &github.GithubClientImpl{HttpClient: httpClient}
 }
 
+func getOrgStats(w http.ResponseWriter, req *http.Request) {
+	ctx := req.Context()
+	githubClient := newClient()
+	resp, err := githubClient.GetOrg(ctx)
+	if err != nil {
+		panic(err)
+	}
+	spew.Dump(resp)
+	return
+}
 
 func main() {
 	http.HandleFunc("/getOrgStats", getOrgStats)
-
-	http.ListenAndServe(":8090", nil)
+	fmt.Println("Listening on " + port)
+	http.ListenAndServe(port, nil)
 }

@@ -5,7 +5,7 @@ import (
 	"github.com/kelseyhightower/envconfig"
 )
 
-var Constants Constants
+var CONSTANTS Constants
 
 type (
 	Constants struct {
@@ -16,7 +16,7 @@ type (
 )
 
 func init() {
-	err := envconfig.Process("github", &Constants)
+	err := envconfig.Process("github", &CONSTANTS)
 	if err != nil {
 		panic(err)
 	}
