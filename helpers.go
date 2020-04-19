@@ -6,15 +6,20 @@ import (
 	"net/http"
   "time"
   "encoding/json"
+  "io/ioutil"
   "os"
   
   "go.opencensus.io/plugin/ochttp"
-  // "github.com/davecgh/go-spew/spew"
+  "github.com/davecgh/go-spew/spew"
   "github.com/fbessez/octo-org/github"
   "github.com/fbessez/octo-org/models"
   "github.com/fbessez/octo-org/config"
   "github.com/fbessez/octo-org/rediscli"
   "github.com/gomodule/redigo/redis"
+)
+
+const (
+	repo_stats_file = "./tmp/repo_name_to_stats.json"
 )
 
 var redisKeyRepoNames = config.CONSTANTS.OrgName + "::repos"
@@ -31,20 +36,49 @@ func check(e error) {
   }
 }
 
-func fetchRepoStats(ctx context.Context, forceRefresh bool, repoName string) (stats *models.GetContributerStatsByRepoResponse, err error) {
-	if true {
-		stats, err = githubClient.GetContributerStatsByRepo(ctx, repoName)
+func getOrgStats(ctx context.Context, forceRefresh bool, repoNames []string) (orgStats *models.OrgStats, err error) {
+	if forceRefresh {
+		orgStats, err := refreshAllRepoStats(ctx, forceRefresh, repoNames)
 		check(err)
-	} else {
-		// Consult local storage
-		// return
+		writeRepoStats(orgStats)
+
+		return orgStats, nil
 	}
+
+	orgStats, err = readRepoStats()
+	check(err)
+
+	return orgStats, nil
+}
+
+func refreshAllRepoStats(ctx context.Context, forceRefresh bool, repoNames []string) (orgStats *models.OrgStats, err error) {
+	result := make(models.OrgStats)
+	spew.Dump(repoNames[0])
+
+	var names [1]string
+	names[0] = "guinness"
+	for _, repoName := range names {
+		stats, err := fetchRepoStats(ctx, repoName)
+		if err != nil {
+			fmt.Println("error getting repo stats", repoName, err)
+			continue
+		}
+
+		result[repoName] = stats.Contributors
+	}
+
+	return &result, nil
+}
+
+func fetchRepoStats(ctx context.Context, repoName string) (stats *models.GetContributerStatsByRepoResponse, err error) {
+	stats, err = githubClient.GetContributerStatsByRepo(ctx, repoName)
+	check(err)
 
 	return stats, nil
 }
 
-func storeRepoStats(stats *models.OrgStats) (err error) {
-	f, err := os.Create("./tmp/repo_name_to_stats.json")
+func writeRepoStats(stats *models.OrgStats) (err error) {
+	f, err := os.Create(repo_stats_file)
 	defer f.Close()
 	check(err)
 
@@ -53,6 +87,17 @@ func storeRepoStats(stats *models.OrgStats) (err error) {
 	fmt.Printf("wrote %d bytes", n2)
 
 	return
+}
+
+func readRepoStats() (orgStats *models.OrgStats, err error) {
+	jsonFile, err := os.Open(repo_stats_file)
+	defer jsonFile.Close()
+	check(err)
+
+	bytes, _ := ioutil.ReadAll(jsonFile)
+	json.Unmarshal(bytes, &orgStats)
+
+	return orgStats, nil
 }
 
 func fetchRepoNames(ctx context.Context, forceRefresh bool) (repoNames []string, err error) {

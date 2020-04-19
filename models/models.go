@@ -30,4 +30,4 @@ type WeekContribution struct {
 	Commits   int `json:"c"`
 }
 
-type OrgStats map[string][]*Contributor 
+type OrgStats map[string][]*Contributor
