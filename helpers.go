@@ -20,6 +20,7 @@ import (
 
 const (
 	repo_stats_file = "./tmp/repo_name_to_stats.json"
+	user_stats_file = "./tmp/user_name_to_stats.json"
 )
 
 var redisKeyRepoNames = config.CONSTANTS.OrgName + "::repos"
@@ -37,7 +38,7 @@ func check(e error) {
 }
 
 func getOrgStats(ctx context.Context, forceRefresh bool, repoNames []string) (orgStats *models.OrgStats, err error) {
-	if false {
+	if forceRefresh {
 		orgStats, err := refreshAllRepoStats(ctx, forceRefresh, repoNames)
 		check(err)
 		writeRepoStats(orgStats)
@@ -55,8 +56,10 @@ func refreshAllRepoStats(ctx context.Context, forceRefresh bool, repoNames []str
 	result := make(models.OrgStats)
 	spew.Dump(repoNames[0])
 
-	var names [1]string
+	var names [3]string
 	names[0] = "guinness"
+	names[1] = "juvo-apis"
+	names[2] = "dmaas"
 	for _, repoName := range names {
 		stats, err := fetchRepoStats(ctx, repoName)
 		if err != nil {
@@ -77,12 +80,12 @@ func fetchRepoStats(ctx context.Context, repoName string) (stats *models.GetCont
 	return stats, nil
 }
 
-func writeRepoStats(stats *models.OrgStats) (err error) {
+func writeRepoStats(orgStats *models.OrgStats) (err error) {
 	f, err := os.Create(repo_stats_file)
 	defer f.Close()
 	check(err)
 
-	bytes, err := json.Marshal(stats)
+	bytes, err := json.Marshal(orgStats)
 	n2, err := f.Write(bytes)
 	fmt.Printf("wrote %d bytes", n2)
 
@@ -98,6 +101,29 @@ func readRepoStats() (orgStats *models.OrgStats, err error) {
 	json.Unmarshal(bytes, &orgStats)
 
 	return orgStats, nil
+}
+
+func writeUserStats(userStats *models.OrgStatsByUser) (err error) {
+	f, err := os.Create(user_stats_file)
+	defer f.Close()
+	check(err)
+
+	bytes, err := json.Marshal(userStats)
+	n2, err := f.Write(bytes)
+	fmt.Printf("wrote %d bytes", n2)
+
+	return
+}
+
+func readUserStats() (userStats *models.OrgStatsByUser, err error) {
+	jsonFile, err := os.Open(user_stats_file)
+	defer jsonFile.Close()
+	check(err)
+
+	bytes, _ := ioutil.ReadAll(jsonFile)
+	json.Unmarshal(bytes, &userStats)
+
+	return userStats, nil
 }
 
 func fetchRepoNames(ctx context.Context, forceRefresh bool) (repoNames []string, err error) {

@@ -25,9 +25,10 @@ func statsHandler(w http.ResponseWriter, req *http.Request) {
 	orgStats, err := getOrgStats(ctx, forceRefresh, repoNames)
 	check(err)
 
-	spew.Dump(orgStats)
-	result, err := models.ConvertOrgStatsToOrgStatsByUser(*orgStats)
-	spew.Dump(result)
+	orgStatsByUser, err := models.ConvertOrgStatsToOrgStatsByUser(*orgStats)
+	check(err)
+
+	writeUserStats(orgStatsByUser)
 
 // allow stats to be sorted in every which way
 
