@@ -19,7 +19,7 @@ func statsHandler(w http.ResponseWriter, req *http.Request) {
 	forceRefresh, err := strconv.ParseBool(req.URL.Query().Get("forceRefresh"))
 	if err != nil { forceRefresh = false }
 
-	repoNames, err := fetchRepoNames(ctx, forceRefresh)
+	repoNames, err := getRepoNames(ctx, forceRefresh)
 	check(err)
 
 	orgStats, err := getOrgStats(ctx, forceRefresh, repoNames)

@@ -5,22 +5,12 @@ import (
 	"fmt"
 	"net/http"
   "time"
-  "encoding/json"
-  "io/ioutil"
-  "os"
   
   "go.opencensus.io/plugin/ochttp"
-  "github.com/davecgh/go-spew/spew"
+
   "github.com/fbessez/octo-org/github"
   "github.com/fbessez/octo-org/models"
   "github.com/fbessez/octo-org/config"
-  "github.com/fbessez/octo-org/rediscli"
-  "github.com/gomodule/redigo/redis"
-)
-
-const (
-	repo_stats_file = "./tmp/repo_name_to_stats.json"
-	user_stats_file = "./tmp/user_name_to_stats.json"
 )
 
 var redisKeyRepoNames = config.CONSTANTS.OrgName + "::repos"
@@ -37,12 +27,44 @@ func check(e error) {
   }
 }
 
+func getRepoNames(ctx context.Context, forceRefresh bool) (repoNames []string, err error) {
+	if forceRefresh {
+		repoNames, err = refreshAllRepoNames(ctx)
+		check(err)
+
+		writeRepoNames(repoNames)
+		return repoNames, nil
+	}
+
+	repoNames, err = readRepoNames()
+	check(err)
+
+	return repoNames, nil
+}
+
+func refreshAllRepoNames(ctx context.Context) (repoNames []string, err error) {
+	repos, err := fetchRepoNames(ctx)
+
+	for _, repo := range repos {
+		repoNames = append(repoNames, repo.Name)
+	}
+
+	return repoNames, nil
+}
+
+func fetchRepoNames(ctx context.Context) (repos []*models.Repository, err error) {
+	response, err := githubClient.GetAllReposByOrg(ctx)
+	check(err)
+
+	return response.Repos, nil
+}
+
 func getOrgStats(ctx context.Context, forceRefresh bool, repoNames []string) (orgStats *models.OrgStats, err error) {
 	if forceRefresh {
 		orgStats, err := refreshAllRepoStats(ctx, forceRefresh, repoNames)
 		check(err)
-		writeRepoStats(orgStats)
 
+		writeRepoStats(orgStats)
 		return orgStats, nil
 	}
 
@@ -54,12 +76,8 @@ func getOrgStats(ctx context.Context, forceRefresh bool, repoNames []string) (or
 
 func refreshAllRepoStats(ctx context.Context, forceRefresh bool, repoNames []string) (orgStats *models.OrgStats, err error) {
 	result := make(models.OrgStats)
-	spew.Dump(repoNames[0])
 
-	var names [2]string
-	names[0] = "dmaas"
-	names[1] = "juvo-apis"
-	for _, repoName := range names {
+	for _, repoName := range repoNames {
 		stats, err := fetchRepoStats(ctx, repoName)
 		if err != nil {
 			fmt.Println("error getting repo stats", repoName, err)
@@ -79,85 +97,3 @@ func fetchRepoStats(ctx context.Context, repoName string) (stats *models.GetCont
 	return stats, nil
 }
 
-func writeRepoStats(orgStats *models.OrgStats) (err error) {
-	f, err := os.Create(repo_stats_file)
-	defer f.Close()
-	check(err)
-
-	bytes, err := json.Marshal(orgStats)
-	n2, err := f.Write(bytes)
-	fmt.Printf("wrote %d bytes", n2)
-
-	return
-}
-
-func readRepoStats() (orgStats *models.OrgStats, err error) {
-	jsonFile, err := os.Open(repo_stats_file)
-	defer jsonFile.Close()
-	check(err)
-
-	bytes, _ := ioutil.ReadAll(jsonFile)
-	json.Unmarshal(bytes, &orgStats)
-
-	return orgStats, nil
-}
-
-func writeUserStats(userStats *models.OrgStatsByUser) (err error) {
-	f, err := os.Create(user_stats_file)
-	defer f.Close()
-	check(err)
-
-	bytes, err := json.Marshal(userStats)
-	n2, err := f.Write(bytes)
-	fmt.Printf("wrote %d bytes", n2)
-
-	return
-}
-
-func readUserStats() (userStats *models.OrgStatsByUser, err error) {
-	jsonFile, err := os.Open(user_stats_file)
-	defer jsonFile.Close()
-	check(err)
-
-	bytes, _ := ioutil.ReadAll(jsonFile)
-	json.Unmarshal(bytes, &userStats)
-
-	return userStats, nil
-}
-
-func fetchRepoNames(ctx context.Context, forceRefresh bool) (repoNames []string, err error) {
-	if forceRefresh {
-		repoNames, err = getAndSetRepoNames(ctx)
-		if err != nil {
-			fmt.Println("Getting repositories by org failed miserably", err)
-			return nil, err
-		}
-	} else {
-		repoNames, err = rediscli.GetSetMembers(redisKeyRepoNames)
-		if err != nil && err == redis.ErrNil {
-			repoNames, err = getAndSetRepoNames(ctx)
-			if err != nil {
-				fmt.Println("Getting repositories by org failed miserably", err)
-				return nil, err
-			}
-		}
-	}
-
-	return repoNames, nil
-}
-
-func getAndSetRepoNames(ctx context.Context) (repoNames []string, err error) {
-	response, err := githubClient.GetAllReposByOrg(ctx)
-	check(err)
-
-	for _, repo := range response.Repos {
-		repoNames = append(repoNames, repo.Name)
-		err = rediscli.SetAdd(redisKeyRepoNames, repo.Name)
-		if err != nil {
-			fmt.Println("Setting " + repo.Name + "to " + redisKeyRepoNames + "failed miserably", err)
-			continue
-		}
-	}
-
-	return repoNames, nil
-}
