@@ -29,3 +29,5 @@ type WeekContribution struct {
 	Deletions int `json:'d"`
 	Commits   int `json:"c"`
 }
+
+type OrgStats map[string][]*Contributor 

@@ -5,6 +5,7 @@ import (
   "net/http"
   "strconv"
 
+  "github.com/fbessez/octo-org/models"
   "github.com/davecgh/go-spew/spew"
 )
 
@@ -21,12 +22,27 @@ func statsHandler(w http.ResponseWriter, req *http.Request) {
 	}
 
 	repoNames, err := fetchRepoNames(ctx, forceRefresh)
-	if err != nil {
-		fmt.Println("error getting repository names", err)
-		return
+	spew.Dump(len(repoNames))
+	check(err)
+
+	orgStats  := make(models.OrgStats)
+	var names [1]string
+	names[0] = "guinness"
+	for _, repoName := range names {
+		stats, err := fetchRepoStats(ctx, forceRefresh, repoName)
+		if err != nil {
+			fmt.Println("error getting repo stats", repoName, err)
+			continue
+		}
+
+		orgStats[repoName] = stats.Contributors
 	}
-	spew.Dump(repoNames)
-// TODO: For some reason, only 30 repositories showing up in my Repositories struct.
+
+	storeRepoStats(&orgStats)
+
+
+
+
 
 // for i, repo := range repos {
 	// get contribution stats

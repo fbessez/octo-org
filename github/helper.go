@@ -7,8 +7,7 @@ import (
 	"io/ioutil"
 	"net/http"
 
-
-	"github.com/davecgh/go-spew/spew"
+	// "github.com/davecgh/go-spew/spew"
 	"github.com/fbessez/octo-org/config"
 )
 
@@ -29,11 +28,8 @@ func (c *GithubClient) makeRequest(request *http.Request) (response *http.Respon
 		return nil, err
 	}
 
-	spew.Dump(response.Status)
-
 	return
 }
-
 
 func (c *GithubClient) unmarshalResponse(ctx context.Context, resp *http.Response, i interface{}) (err error) {
 	defer func() {

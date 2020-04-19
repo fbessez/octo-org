@@ -63,23 +63,7 @@ func (c *GithubClient) GetOrg(ctx context.Context) (getOrgResponse *models.GetOr
 	return
 }
 
-func (c *GithubClient) GetAllReposByOrg(ctx context.Context) (getReposByOrgResponse *models.GetReposByOrgResponse, err error) {
-	getReposByOrgResponse = &models.GetReposByOrgResponse{}
-
-	for page := 1; page < 3; i++ {
-		r, err := c.GetReposByOrg(ctx, page)
-		if err != nil {
-			fmt.Println("error making request", err)
-			return nil, err
-		}
-
-		getReposByOrgResponse.Repos = append(getReposByOrgResponse.Repos, r.Repos...)
-	}
-
-	return
-}
-
-func (c *GithubClient) GetReposByOrg(ctx context.Context, page int) (getReposByOrgResponse *models.GetReposByOrgResponse, err error) {
+func (c *GithubClient) GetReposByOrgByPage(ctx context.Context, page int) (getReposByOrgResponse *models.GetReposByOrgResponse, err error) {
 	url := GITHUB_BASE_URL + "orgs/" + config.CONSTANTS.OrgName + "/repos?per_page=100&page=" + strconv.Itoa(page)
 
 	req,  err := c.formRequest("GET", url)
@@ -116,8 +100,7 @@ func (c *GithubClient) GetContributerStatsByRepo(ctx context.Context, repoName s
 	}
 
 	getContributerStatsByRepoResponse = &models.GetContributerStatsByRepoResponse{}
-	c.unmarshalResponse(ctx, resp, getContributerStatsByRepoResponse)
-	spew.Dump(getContributerStatsByRepoResponse)
+	c.unmarshalResponse(ctx, resp, &getContributerStatsByRepoResponse.Contributors)
 
 	return
 }
@@ -141,3 +124,18 @@ func (c *GithubClient) CheckOrgMembership(ctx context.Context, username string) 
 	return resp.StatusCode == 200, nil
 }
 
+func (c *GithubClient) GetAllReposByOrg(ctx context.Context) (getReposByOrgResponse *models.GetReposByOrgResponse, err error) {
+	getReposByOrgResponse = &models.GetReposByOrgResponse{}
+
+	for page := 1; page < 3; page++ {
+		r, err := c.GetReposByOrgByPage(ctx, page)
+		if err != nil {
+			fmt.Println("error paginating", err)
+			return nil, err
+		}
+
+		getReposByOrgResponse.Repos = append(getReposByOrgResponse.Repos, r.Repos...)
+	}
+
+	return
+}
