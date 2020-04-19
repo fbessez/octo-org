@@ -37,7 +37,7 @@ func check(e error) {
 }
 
 func getOrgStats(ctx context.Context, forceRefresh bool, repoNames []string) (orgStats *models.OrgStats, err error) {
-	if forceRefresh {
+	if false {
 		orgStats, err := refreshAllRepoStats(ctx, forceRefresh, repoNames)
 		check(err)
 		writeRepoStats(orgStats)

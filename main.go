@@ -5,7 +5,7 @@ import (
   "net/http"
   "strconv"
 
-  // "github.com/fbessez/octo-org/models"
+  "github.com/fbessez/octo-org/models"
   "github.com/davecgh/go-spew/spew"
 )
 
@@ -26,10 +26,8 @@ func statsHandler(w http.ResponseWriter, req *http.Request) {
 	check(err)
 
 	spew.Dump(orgStats)
-
-// iterate through repos in stats
-// collecting information on a per user basis
-// adding together by week :::::: additions, deletions, commits
+	result, err := models.ConvertOrgStatsToOrgStatsByUser(*orgStats)
+	spew.Dump(result)
 
 // allow stats to be sorted in every which way
 
