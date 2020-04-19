@@ -1,16 +1,11 @@
 package models
 
-import (
-	"github.com/davecgh/go-spew/spew"
-)
-
 func ConvertOrgStatsToOrgStatsByUser(orgStats OrgStats) (orgStatsByUser *OrgStatsByUser, err error) {
 	result := make(OrgStatsByUser)
 	for repo_name, repo_stats := range orgStats {
 		for _, repo_stat := range repo_stats {
-			userStatsByRepo := make(UserStatsByRepo)
 			github_username := repo_stat.Author.Login
-			result[github_username] = &userStatsByRepo
+			userStatsByRepo := make(UserStatsByRepo)
 
 			total_commits   := 0
 			total_additions := 0
@@ -29,9 +24,18 @@ func ConvertOrgStatsToOrgStatsByUser(orgStats OrgStats) (orgStatsByUser *OrgStat
 			}
 
 			userStatsByRepo[repo_name] = &aggregateRepoStats
-			spew.Dump(userStatsByRepo)
+
+			if result[github_username] == nil {
+				result[github_username] = &userStatsByRepo
+			}
+			for repo_name, repo_stats := range *result[github_username] {
+				userStatsByRepo[repo_name] = repo_stats
+			}
+
+			result[github_username] = &userStatsByRepo
 		}
 	}
 
 	return &result, nil
 }
+

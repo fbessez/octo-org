@@ -30,8 +30,6 @@ func statsHandler(w http.ResponseWriter, req *http.Request) {
 
 	writeUserStats(orgStatsByUser)
 
-// allow stats to be sorted in every which way
-
 	return
 }
 

@@ -56,10 +56,9 @@ func refreshAllRepoStats(ctx context.Context, forceRefresh bool, repoNames []str
 	result := make(models.OrgStats)
 	spew.Dump(repoNames[0])
 
-	var names [3]string
-	names[0] = "guinness"
+	var names [2]string
+	names[0] = "dmaas"
 	names[1] = "juvo-apis"
-	names[2] = "dmaas"
 	for _, repoName := range names {
 		stats, err := fetchRepoStats(ctx, repoName)
 		if err != nil {
