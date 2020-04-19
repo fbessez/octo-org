@@ -4,10 +4,11 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/davecgh/go-spew/spew"
-	"github.com/fbessez/orgContributions/models"
-	"github.com/fbessez/orgContributions/config"
+	"github.com/fbessez/octo-org/models"
+	"github.com/fbessez/octo-org/config"
 )
 
 const (
@@ -19,7 +20,7 @@ type GithubClient struct {
 }
 
 func (c *GithubClient) GetUser(ctx context.Context) (getUserResponse *models.GetUserResponse, err error) {
-	url := GITHUB_BASE_URL + "orgs/" + config.CONSTANTS.OrgName
+	url := GITHUB_BASE_URL + "user"
 
 	req,  err := c.formRequest("GET", url)
 	if err != nil { 
@@ -41,7 +42,7 @@ func (c *GithubClient) GetUser(ctx context.Context) (getUserResponse *models.Get
 }
 
 func (c *GithubClient) GetOrg(ctx context.Context) (getOrgResponse *models.GetOrgResponse, err error) {
-	url := GITHUB_BASE_URL + "user"
+	url := GITHUB_BASE_URL + "orgs/" + config.CONSTANTS.OrgName
 
 	req,  err := c.formRequest("GET", url)
 	if err != nil { 
@@ -62,8 +63,24 @@ func (c *GithubClient) GetOrg(ctx context.Context) (getOrgResponse *models.GetOr
 	return
 }
 
-func (c *GithubClient) GetReposByOrg(ctx context.Context) (getReposByOrgResponse *models.GetReposByOrgResponse, err error) {
-	url := GITHUB_BASE_URL + "orgs/" + config.CONSTANTS.OrgName + "/repos"
+func (c *GithubClient) GetAllReposByOrg(ctx context.Context) (getReposByOrgResponse *models.GetReposByOrgResponse, err error) {
+	getReposByOrgResponse = &models.GetReposByOrgResponse{}
+
+	for page := 1; page < 3; i++ {
+		r, err := c.GetReposByOrg(ctx, page)
+		if err != nil {
+			fmt.Println("error making request", err)
+			return nil, err
+		}
+
+		getReposByOrgResponse.Repos = append(getReposByOrgResponse.Repos, r.Repos...)
+	}
+
+	return
+}
+
+func (c *GithubClient) GetReposByOrg(ctx context.Context, page int) (getReposByOrgResponse *models.GetReposByOrgResponse, err error) {
+	url := GITHUB_BASE_URL + "orgs/" + config.CONSTANTS.OrgName + "/repos?per_page=100&page=" + strconv.Itoa(page)
 
 	req,  err := c.formRequest("GET", url)
 	if err != nil { 
@@ -78,8 +95,7 @@ func (c *GithubClient) GetReposByOrg(ctx context.Context) (getReposByOrgResponse
 	}
 
 	getReposByOrgResponse = &models.GetReposByOrgResponse{}
-	c.unmarshalResponse(ctx, resp, getReposByOrgResponse)
-	spew.Dump(getReposByOrgResponse)
+	c.unmarshalResponse(ctx, resp, &getReposByOrgResponse.Repos)
 
 	return
 }

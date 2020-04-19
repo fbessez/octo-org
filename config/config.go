@@ -12,6 +12,12 @@ type (
 		Username string `yaml:"username" envconfig:"username" required:"true"`
 		Password string `yaml:"password" envconfig:"password" required:"true"`
 		OrgName  string `yaml:"orgname"  envconfig:"orgname"  required:"true"`
+		Redis    Redis 
+	}
+
+	Redis struct {
+		Address string `yaml:"address" envconfig:"redis_address" required:"true"`
+		Port    string `yaml:"port"    envconfig:"redis_port"    required:"true"`
 	}
 )
 

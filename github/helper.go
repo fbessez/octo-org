@@ -9,7 +9,7 @@ import (
 
 
 	"github.com/davecgh/go-spew/spew"
-	"github.com/fbessez/orgContributions/config"
+	"github.com/fbessez/octo-org/config"
 )
 
 func (c *GithubClient) formRequest(action string, url string) (request *http.Request, err error) {

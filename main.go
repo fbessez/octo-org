@@ -2,37 +2,48 @@ package main
 	
 import (
 	"fmt"
-	"time"
   "net/http"
-  "go.opencensus.io/plugin/ochttp"
+  "strconv"
 
-  "github.com/fbessez/orgContributions/github"
+  "github.com/davecgh/go-spew/spew"
 )
 
 const (
 	port = ":8090"
 )
 
-func newGithubClient() *github.GithubClient {
-	var httpClient = &http.Client{Transport: &ochttp.Transport{}, Timeout: 5 * time.Second}
-	return &github.GithubClient{HttpClient: httpClient}
-}
-
-func getOrgStats(w http.ResponseWriter, req *http.Request) {
+func statsHandler(w http.ResponseWriter, req *http.Request) {
 	ctx := req.Context()
-	githubClient := newGithubClient()
 
-	_, err := githubClient.GetOrg(ctx)
+	forceRefresh, err := strconv.ParseBool(req.URL.Query().Get("forceRefresh"))
 	if err != nil {
-		fmt.Println("error getting Org", err)
+		forceRefresh = false
+	}
+
+	repoNames, err := fetchRepoNames(ctx, forceRefresh)
+	if err != nil {
+		fmt.Println("error getting repository names", err)
 		return
 	}
+	spew.Dump(repoNames)
+// TODO: For some reason, only 30 repositories showing up in my Repositories struct.
+
+// for i, repo := range repos {
+	// get contribution stats
+	// store contribution stats :::::: stats -> $repo_name -> $username -> $week
+// }
+
+// iterate through repos in stats
+// collecting information on a per user basis
+// adding together by week :::::: additions, deletions, commits
+
+// allow stats to be sorted in every which way
 
 	return
 }
 
 func main() {
-	http.HandleFunc("/getOrgStats", getOrgStats)
+	http.HandleFunc("/stats", statsHandler)
 	fmt.Println("Listening on " + port)
 	http.ListenAndServe(port, nil)
 }
