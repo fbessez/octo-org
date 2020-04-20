@@ -1,6 +1,7 @@
 package main
 	
 import (
+	"encoding/json"
 	"fmt"
   "net/http"
   "sort"
@@ -37,6 +38,8 @@ func statsHandler(w http.ResponseWriter, req *http.Request) {
 	})
 
 	spew.Dump(userCommits)
+
+	json.NewEncoder(w).Encode(userCommits)
 
 	return
 }
