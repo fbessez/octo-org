@@ -37,8 +37,6 @@ func statsHandler(w http.ResponseWriter, req *http.Request) {
 		return userCommits[i].TotalCommits > userCommits[j].TotalCommits
 	})
 
-	spew.Dump(userCommits)
-
 	json.NewEncoder(w).Encode(userCommits)
 
 	return

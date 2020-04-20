@@ -7,7 +7,6 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	// "github.com/davecgh/go-spew/spew"
 	"github.com/fbessez/octo-org/config"
 )
 
