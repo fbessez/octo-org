@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
   "net/http"
+  "sort"
   "strconv"
 
   "github.com/fbessez/octo-org/models"
@@ -29,6 +30,13 @@ func statsHandler(w http.ResponseWriter, req *http.Request) {
 	check(err)
 
 	writeUserStats(orgStatsByUser)
+
+	userCommits := getUserCommits(*orgStatsByUser)
+	sort.Slice(userCommits, func(i, j int) bool {
+		return userCommits[i].TotalCommits > userCommits[j].TotalCommits
+	})
+
+	spew.Dump(userCommits)
 
 	return
 }

@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	// "sort"
   "time"
   
   "go.opencensus.io/plugin/ochttp"
@@ -95,5 +96,18 @@ func fetchRepoStats(ctx context.Context, repoName string) (stats *models.GetCont
 	check(err)
 
 	return stats, nil
+}
+
+func getUserCommits(orgStatsByUser models.OrgStatsByUser) (userCommits []*models.UserCommits) {
+	for githubUsername, userStats := range orgStatsByUser {
+		totalCommits := 0
+		for _, repoStats := range *userStats {
+			totalCommits += repoStats.TotalCommits
+		}
+
+		userCommits = append(userCommits, &models.UserCommits{GithubUsername: githubUsername, TotalCommits: totalCommits})
+	}
+	
+	return
 }
 
