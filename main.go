@@ -18,6 +18,8 @@ const (
 func statsHandler(w http.ResponseWriter, req *http.Request) {
 	ctx := req.Context()
 
+	enableCors(&w)
+
 	forceRefresh, err := strconv.ParseBool(req.URL.Query().Get("forceRefresh"))
 	if err != nil { forceRefresh = false }
 
@@ -40,6 +42,10 @@ func statsHandler(w http.ResponseWriter, req *http.Request) {
 	json.NewEncoder(w).Encode(userCommits)
 
 	return
+}
+
+func enableCors(w *http.ResponseWriter) {
+	(*w).Header().Set("Access-Control-Allow-Origin", "*")
 }
 
 func main() {
