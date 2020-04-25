@@ -6,9 +6,9 @@ function renderList(jsonData) {
       <td class="rank"> ${index + 1}.</td>
       <td class="user"> ${row['github_username']}</td>
       <td class="metric"> ${row['total_commits']}</td>
-      <td class="metric"> ${row['total_commits']}</td>
-      <td class="metric"> ${row['total_commits']}</td>
-      <td class="metric"> ${row['total_commits']}</td>
+      <td class="metric"> ${row['total_additions']}</td>
+      <td class="metric"> ${row['total_deletions']}</td>
+      <td class="metric"> ${(row['total_additions'] / row['total_deletions']).toFixed(2) }</td>
     `).join('')}`;
 }
 

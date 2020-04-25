@@ -77,7 +77,10 @@ func getOrgStats(ctx context.Context, forceRefresh bool, repoNames []string) (or
 func refreshAllRepoStats(ctx context.Context, forceRefresh bool, repoNames []string) (orgStats *models.OrgStats, err error) {
 	result := make(models.OrgStats)
 
-	for _, repoName := range repoNames {
+	for i, repoName := range repoNames {
+		fmt.Println("sleeping for a second", i, repoName)
+		time.Sleep(1 * time.Second)
+
 		stats, err := fetchRepoStats(ctx, repoName)
 		if err != nil {
 			fmt.Println("error getting repo stats", repoName, err)
@@ -100,11 +103,20 @@ func fetchRepoStats(ctx context.Context, repoName string) (stats *models.GetCont
 func getUserCommits(orgStatsByUser models.OrgStatsByUser) (userCommits []*models.UserCommits) {
 	for githubUsername, userStats := range orgStatsByUser {
 		totalCommits := 0
+		totalAdditions := 0
+		totalDeletions := 0
 		for _, repoStats := range *userStats {
 			totalCommits += repoStats.TotalCommits
+			totalAdditions += repoStats.TotalAdditions
+			totalDeletions += repoStats.TotalDeletions
 		}
 
-		userCommits = append(userCommits, &models.UserCommits{GithubUsername: githubUsername, TotalCommits: totalCommits})
+		userCommits = append(userCommits, &models.UserCommits{
+																				GithubUsername: githubUsername,
+																				TotalCommits:   totalCommits,
+																				TotalAdditions: totalAdditions,
+																				TotalDeletions: totalDeletions,
+																			})
 	}
 	
 	return

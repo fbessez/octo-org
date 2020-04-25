@@ -74,9 +74,7 @@ $ curl localhost:8090/stats | python -m json.tool
 
 ## What is left to do?
 
-- UX/UI
 - Additional Sorting Options
-- Cache Rules
 - Error Handling
 
 ## Acknowledgments

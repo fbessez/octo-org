@@ -26,6 +26,6 @@ type Contributor struct {
 type WeekContribution struct {
 	Week      int `json:"w"`
 	Additions int `json:"a"`
-	Deletions int `json:'d"`
+	Deletions int `json:"d"`
 	Commits   int `json:"c"`
 }
