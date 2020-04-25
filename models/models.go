@@ -16,8 +16,8 @@ type AggregateRepoStats struct {
 }
 
 type UserCommits struct {
-	GithubUsername string `json:"github_username"`
-	TotalCommits   int    `json:"total_commits"`
-	TotalAdditions int    `json:"total_additions"`
-	TotalDeletions int    `json:"total_deletions"`
+	GithubUsername string  `json:"github_username"`
+	TotalCommits   int     `json:"total_commits"`
+	TotalAdditions int     `json:"total_additions"`
+	TotalDeletions int     `json:"total_deletions"`
 }

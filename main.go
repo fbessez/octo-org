@@ -7,12 +7,16 @@ import (
   "sort"
   "strconv"
 
-  "github.com/fbessez/octo-org/models"
   "github.com/davecgh/go-spew/spew"
+  "github.com/fbessez/octo-org/models"
 )
 
 const (
 	port = ":8090"
+)
+
+var (
+	availableSorting = [4]string {"additions", "deletions", "commits", "ratio"}
 )
 
 func statsHandler(w http.ResponseWriter, req *http.Request) {
@@ -22,6 +26,8 @@ func statsHandler(w http.ResponseWriter, req *http.Request) {
 
 	forceRefresh, err := strconv.ParseBool(req.URL.Query().Get("forceRefresh"))
 	if err != nil { forceRefresh = false }
+	sortOption := req.URL.Query().Get("sort")
+	if sortOption == "" { sortOption = "commits" }
 
 	repoNames, err := getRepoNames(ctx, forceRefresh)
 	check(err)
@@ -35,9 +41,21 @@ func statsHandler(w http.ResponseWriter, req *http.Request) {
 	writeUserStats(orgStatsByUser)
 
 	userCommits := getUserCommits(*orgStatsByUser)
-	sort.Slice(userCommits, func(i, j int) bool {
-		return userCommits[i].TotalCommits > userCommits[j].TotalCommits
-	})
+
+	switch sortOption {
+	case "additions":
+		sort.Slice(userCommits, func(i, j int) bool {
+			return userCommits[i].TotalAdditions > userCommits[j].TotalAdditions
+		})
+	case "deletions": 
+		sort.Slice(userCommits, func(i, j int) bool {
+			return userCommits[i].TotalDeletions > userCommits[j].TotalDeletions
+		})
+	default: 
+		sort.Slice(userCommits, func(i, j int) bool {
+			return userCommits[i].TotalCommits > userCommits[j].TotalCommits
+		})
+	}
 
 	json.NewEncoder(w).Encode(userCommits)
 

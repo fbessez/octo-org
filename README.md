@@ -74,7 +74,7 @@ $ curl localhost:8090/stats | python -m json.tool
 
 ## What is left to do?
 
-- Additional Sorting Options
+- Active class on Sorting Buttons
 - Error Handling
 
 ## Acknowledgments

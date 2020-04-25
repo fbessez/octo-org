@@ -1,4 +1,5 @@
 const tbody = document.querySelector('#tableBody')
+const queryString = new URLSearchParams(window.location.search);
 
 function renderList(jsonData) {
   return `${jsonData.map(
@@ -13,7 +14,10 @@ function renderList(jsonData) {
 }
 
 async function fillTableData() {
-  const URL = `http://localhost:8090/stats`;
+  let sortOption = queryString.get('sort');
+  let queryParam = sortOption ? '?sort=' + sortOption : '';
+  const URL = 'http://localhost:8090/stats' + queryParam;
+
   try {
     const fetchResult = fetch(new Request(URL, { method: 'GET', cache: 'reload' }));
     const response = await fetchResult;
