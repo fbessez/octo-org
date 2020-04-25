@@ -37,7 +37,7 @@
           <div class="boxHeader">
             <div class="filters">
               <div class="links">
-                <a class="btn btn-white" href="/">
+                <a class="btn btn-white" href="">
                   All Time - All Repos
                 </a>
               </div>
@@ -53,10 +53,32 @@
                   <th>
                     <span>Github Name</span>
                   </th>
-                  <th class="metric active">
+                  <th class="metric filter-button">
                     <a href="?sort=commits">
                       <span>Commits</span>
-                        <span class="tooltip" data-tippy="The number of pull requests the reviewer has either approved, requested changes, or left comments on." data-tippy-theme="light" data-tippy-sticky="true" data-tippy-interactive="true" data-tippy-hideonclick="false" data-tippy-arrow="true" tabindex="0">
+                      <span class="tooltip" data-tippy="The number of pull commits the user has made." data-tippy-theme="light" data-tippy-sticky="true" data-tippy-interactive="true" data-tippy-hideonclick="false" data-tippy-arrow="true" tabindex="0">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="12" viewBox="0 0 16 16" width="12">
+                          <path d="M9 8a1 1 0 0 0-1-1H5.5a1 1 0 1 0 0 2H7v4a1 1 0 0 0 2 0zM4 0h8a4 4 0 0 1 4 4v8a4 4 0 0 1-4 4H4a4 4 0 0 1-4-4V4a4 4 0 0 1 4-4zm4 5.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z" fill-rule="evenodd" fill="currentColor">
+                          </path>
+                        </svg>
+                      </span>
+                    </a>
+                 </th>
+                  <th class="metric filter-button">
+                    <a href="?sort=additions">
+                      <span>Additions</span>
+                      <span class="tooltip" data-tippy="The number of additions the user has made." data-tippy-theme="light" data-tippy-sticky="true" data-tippy-interactive="true" data-tippy-hideonclick="false" data-tippy-arrow="true" tabindex="0">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="12" viewBox="0 0 16 16" width="12">
+                          <path d="M9 8a1 1 0 0 0-1-1H5.5a1 1 0 1 0 0 2H7v4a1 1 0 0 0 2 0zM4 0h8a4 4 0 0 1 4 4v8a4 4 0 0 1-4 4H4a4 4 0 0 1-4-4V4a4 4 0 0 1 4-4zm4 5.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z" fill-rule="evenodd" fill="currentColor">
+                          </path>
+                        </svg>
+                      </span>
+                    </a>
+                 </th>
+                  <th class="metric filter-button">
+                    <a href="?sort=deletions">
+                      <span>Deletions</span>
+                      <span class="tooltip" data-tippy="The number of deletions the user has made." data-tippy-theme="light" data-tippy-sticky="true" data-tippy-interactive="true" data-tippy-hideonclick="false" data-tippy-arrow="true" tabindex="0">
                         <svg xmlns="http://www.w3.org/2000/svg" height="12" viewBox="0 0 16 16" width="12">
                           <path d="M9 8a1 1 0 0 0-1-1H5.5a1 1 0 1 0 0 2H7v4a1 1 0 0 0 2 0zM4 0h8a4 4 0 0 1 4 4v8a4 4 0 0 1-4 4H4a4 4 0 0 1-4-4V4a4 4 0 0 1 4-4zm4 5.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z" fill-rule="evenodd" fill="currentColor">
                           </path>
@@ -65,18 +87,14 @@
                     </a>
                  </th>
                   <th class="metric">
-                    <a href="?sort=additions">
-                      <span>Additions</span>
-                    </a>
-                 </th>
-                  <th class="metric">
-                    <a href="?sort=deletions">
-                      <span>Deletions</span>
-                    </a>
-                 </th>
-                  <th class="metric">
                     <a href="">
                       <span>Ratio</span>
+                      <span class="tooltip" data-tippy="The ratio of additions to deletions the user has made." data-tippy-theme="light" data-tippy-sticky="true" data-tippy-interactive="true" data-tippy-hideonclick="false" data-tippy-arrow="true" tabindex="0">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="12" viewBox="0 0 16 16" width="12">
+                          <path d="M9 8a1 1 0 0 0-1-1H5.5a1 1 0 1 0 0 2H7v4a1 1 0 0 0 2 0zM4 0h8a4 4 0 0 1 4 4v8a4 4 0 0 1-4 4H4a4 4 0 0 1-4-4V4a4 4 0 0 1 4-4zm4 5.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z" fill-rule="evenodd" fill="currentColor">
+                          </path>
+                        </svg>
+                      </span>
                     </a>
                  </th>
                 </tr>

@@ -1,5 +1,5 @@
-const tbody = document.querySelector('#tableBody')
 const queryString = new URLSearchParams(window.location.search);
+const tbody = document.querySelector('#tableBody')
 
 function renderList(jsonData) {
   return `${jsonData.map(
@@ -35,3 +35,31 @@ async function fillTableData() {
 }
 
 fillTableData()
+
+function handleFilterClick(e) {
+  // TODO: rather than rerendering on click due to the href, just resort the fetched (once) data.
+  // function sortBy(prop){
+  //    return function(a,b){
+  //       if (a[prop] > b[prop]){
+  //           return 1;
+  //       } else if(a[prop] < b[prop]){
+  //           return -1;
+  //       }
+  //       return 0;
+  //    }
+  // }
+  e.preventDefault();
+  filterButtons.forEach(node => {
+    node.classList.remove('active')
+  })
+
+  e.currentTarget.classList.add('active')
+}
+
+let filterButtons = Array.from(document.querySelectorAll('.filter-button'))
+filterButtons.forEach(btn => {
+  btn.addEventListener('click', handleFilterClick)
+})
+
+
+

@@ -257,6 +257,7 @@ button:-moz-focusring,
   color: #0d53c4;
 }
 
+
 .section-leaderboard .leaderboard table {
   border-collapse: collapse;
   table-layout: fixed;
@@ -278,6 +279,8 @@ button:-moz-focusring,
 .section-leaderboard .leaderboard table tr th.active a {
   border-bottom: 2px solid #222;
 }
+
+.filter-button{}
 
 .section-leaderboard .leaderboard table tr th a {
   padding: 1em 0;
