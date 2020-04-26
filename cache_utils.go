@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"net/http"
+	"strconv"
   "encoding/json"
   "io/ioutil"
   "os"
@@ -76,4 +78,25 @@ func readRepoNames() (repoNames []string, err error) {
 	check(err)
 
 	return
+}
+
+func getForceRefreshValue(req *http.Request) bool {
+	forceRefresh, err := strconv.ParseBool(req.URL.Query().Get("forceRefresh"))
+	if forceRefresh != true || err != nil {
+		if !fileExists(repo_stats_file) || !fileExists(user_stats_file) {
+			forceRefresh = true
+		} else {
+			forceRefresh = false
+		}
+	}
+
+	return forceRefresh
+}
+
+func fileExists(filename string) bool {
+    info, err := os.Stat(filename)
+    if os.IsNotExist(err) {
+        return false
+    }
+    return !info.IsDir()
 }

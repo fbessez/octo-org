@@ -268,6 +268,11 @@ button:-moz-focusring,
   border-bottom: 1px solid #dae1e9;
 }
 
+.section-leaderboard .leaderboard table tr:hover {
+  border-bottom: 1px solid #dae1e9;
+  background-color: #e4eef5;
+}
+
 .section-leaderboard .leaderboard table tr th {
   text-transform: uppercase;
   font-weight: 500;

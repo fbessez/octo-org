@@ -5,7 +5,6 @@ import (
 	"fmt"
   "net/http"
   "sort"
-  "strconv"
 
   "github.com/davecgh/go-spew/spew"
   "github.com/fbessez/octo-org/models"
@@ -24,8 +23,8 @@ func statsHandler(w http.ResponseWriter, req *http.Request) {
 
 	enableCors(&w)
 
-	forceRefresh, err := strconv.ParseBool(req.URL.Query().Get("forceRefresh"))
-	if err != nil { forceRefresh = false }
+	forceRefresh := getForceRefreshValue(req)
+
 	sortOption := req.URL.Query().Get("sort")
 	if sortOption == "" { sortOption = "commits" }
 

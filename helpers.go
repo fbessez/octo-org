@@ -77,9 +77,9 @@ func getOrgStats(ctx context.Context, forceRefresh bool, repoNames []string) (or
 func refreshAllRepoStats(ctx context.Context, forceRefresh bool, repoNames []string) (orgStats *models.OrgStats, err error) {
 	result := make(models.OrgStats)
 
-	for i, repoName := range repoNames {
-		fmt.Println("sleeping for a second", i, repoName)
-		time.Sleep(1 * time.Second)
+	for _, repoName := range repoNames {
+		// fmt.Println("sleeping for a 100ms", i, repoName)
+		// time.Sleep(100 * time.Milliseconds)
 
 		stats, err := fetchRepoStats(ctx, repoName)
 		if err != nil {
