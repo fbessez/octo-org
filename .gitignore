@@ -1,3 +1,5 @@
 sample_env.go
 octo-org
-tmp/
+
+tmp/*
+!tmp/.gitkeep
