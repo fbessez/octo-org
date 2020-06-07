@@ -7,11 +7,11 @@ func ConvertOrgStatsToOrgStatsByUser(orgStats OrgStats) (orgStatsByUser *OrgStat
 			github_username := repo_stat.Author.Login
 			userStatsByRepo := make(UserStatsByRepo)
 
-			total_commits   := 0
+			total_commits := 0
 			total_additions := 0
 			total_deletions := 0
 			for _, week := range repo_stat.Weeks {
-				total_commits   += week.Commits
+				total_commits += week.Commits
 				total_additions += week.Additions
 				total_deletions += week.Deletions
 			}
@@ -20,7 +20,7 @@ func ConvertOrgStatsToOrgStatsByUser(orgStats OrgStats) (orgStatsByUser *OrgStat
 				TotalCommits:   total_commits,
 				TotalAdditions: total_additions,
 				TotalDeletions: total_deletions,
-				Weeks: 					repo_stat.Weeks,
+				Weeks:          repo_stat.Weeks,
 			}
 
 			userStatsByRepo[repo_name] = &aggregateRepoStats
@@ -38,4 +38,3 @@ func ConvertOrgStatsToOrgStatsByUser(orgStats OrgStats) (orgStatsByUser *OrgStat
 
 	return &result, nil
 }
-

@@ -1,11 +1,11 @@
 package models
 
 type Repository struct {
-	Id 		 					int 	 `json:"id"`
-	NodeId 					string `json:"node_id"`
-	Name   					string `json:"name"`
-	FullName 				string `json:"full_name"`
-	Owner 		   		*Owner `json:"owner"`
+	Id              int    `json:"id"`
+	NodeId          string `json:"node_id"`
+	Name            string `json:"name"`
+	FullName        string `json:"full_name"`
+	Owner           *Owner `json:"owner"`
 	ContributorsUrl string `json:"contributors_url`
 	Archived        bool   `json:"archived"`
 }

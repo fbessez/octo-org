@@ -7,8 +7,8 @@ import (
 	"strconv"
 
 	"github.com/davecgh/go-spew/spew"
-	"github.com/fbessez/octo-org/models"
 	"github.com/fbessez/octo-org/config"
+	"github.com/fbessez/octo-org/models"
 )
 
 const (
@@ -22,8 +22,8 @@ type GithubClient struct {
 func (c *GithubClient) GetUser(ctx context.Context) (getUserResponse *models.GetUserResponse, err error) {
 	url := GITHUB_BASE_URL + "user"
 
-	req,  err := c.formRequest("GET", url)
-	if err != nil { 
+	req, err := c.formRequest("GET", url)
+	if err != nil {
 		fmt.Println("error forming request", err)
 		return nil, err
 	}
@@ -44,8 +44,8 @@ func (c *GithubClient) GetUser(ctx context.Context) (getUserResponse *models.Get
 func (c *GithubClient) GetOrg(ctx context.Context) (getOrgResponse *models.GetOrgResponse, err error) {
 	url := GITHUB_BASE_URL + "orgs/" + config.CONSTANTS.OrgName
 
-	req,  err := c.formRequest("GET", url)
-	if err != nil { 
+	req, err := c.formRequest("GET", url)
+	if err != nil {
 		fmt.Println("error forming request", err)
 		return nil, err
 	}
@@ -66,8 +66,8 @@ func (c *GithubClient) GetOrg(ctx context.Context) (getOrgResponse *models.GetOr
 func (c *GithubClient) GetReposByOrgByPage(ctx context.Context, page int) (getReposByOrgResponse *models.GetReposByOrgResponse, err error) {
 	url := GITHUB_BASE_URL + "orgs/" + config.CONSTANTS.OrgName + "/repos?per_page=100&page=" + strconv.Itoa(page)
 
-	req,  err := c.formRequest("GET", url)
-	if err != nil { 
+	req, err := c.formRequest("GET", url)
+	if err != nil {
 		fmt.Println("error forming request", err)
 		return nil, err
 	}
@@ -87,8 +87,8 @@ func (c *GithubClient) GetReposByOrgByPage(ctx context.Context, page int) (getRe
 func (c *GithubClient) GetContributerStatsByRepo(ctx context.Context, repoName string) (getContributerStatsByRepoResponse *models.GetContributerStatsByRepoResponse, err error) {
 	url := GITHUB_BASE_URL + "repos/" + config.CONSTANTS.OrgName + "/" + repoName + "/stats/contributors"
 
-	req,  err := c.formRequest("GET", url)
-	if err != nil { 
+	req, err := c.formRequest("GET", url)
+	if err != nil {
 		fmt.Println("error forming request", err)
 		return nil, err
 	}
@@ -108,8 +108,8 @@ func (c *GithubClient) GetContributerStatsByRepo(ctx context.Context, repoName s
 func (c *GithubClient) CheckOrgMembership(ctx context.Context, username string) (isMember bool, err error) {
 	url := GITHUB_BASE_URL + "orgs/" + config.CONSTANTS.OrgName + "/members/" + username
 
-	req,  err := c.formRequest("GET", url)
-	if err != nil { 
+	req, err := c.formRequest("GET", url)
+	if err != nil {
 		fmt.Println("error forming request", err)
 		return false, err
 	}

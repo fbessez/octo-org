@@ -2,6 +2,10 @@
 
 octo-org is a really shitty way to figure out where you stand in your github organization in terms of total commit count. As GitHub stands today, we can only view `contributions` by repo. I was curious about `contributions` by organization. And so, `octo-org` was born.
 
+## Demo
+
+![](demo.gif)
+
 ## Getting Started
 
 ```

@@ -6,8 +6,8 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/gomodule/redigo/redis"
 	"github.com/fbessez/octo-org/config"
+	"github.com/gomodule/redigo/redis"
 )
 
 // Pool is redis pool instance

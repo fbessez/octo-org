@@ -1,15 +1,15 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net/http"
+	"os"
 	"strconv"
-  "encoding/json"
-  "io/ioutil"
-  "os"
- 
-  "github.com/fbessez/octo-org/models"
-  "github.com/fbessez/octo-org/rediscli"
+
+	"github.com/fbessez/octo-org/models"
+	"github.com/fbessez/octo-org/rediscli"
 )
 
 const (
@@ -67,7 +67,7 @@ func writeRepoNames(repoNames []string) {
 	for _, repoName := range repoNames {
 		err := rediscli.SetAdd(redisKeyRepoNames, repoName)
 		if err != nil {
-			fmt.Println("Setting " + repoName + "to " + redisKeyRepoNames + "failed miserably", err)
+			fmt.Println("Setting "+repoName+"to "+redisKeyRepoNames+"failed miserably", err)
 			continue
 		}
 	}
@@ -94,9 +94,9 @@ func getForceRefreshValue(req *http.Request) bool {
 }
 
 func fileExists(filename string) bool {
-    info, err := os.Stat(filename)
-    if os.IsNotExist(err) {
-        return false
-    }
-    return !info.IsDir()
+	info, err := os.Stat(filename)
+	if os.IsNotExist(err) {
+		return false
+	}
+	return !info.IsDir()
 }

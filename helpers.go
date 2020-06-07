@@ -4,13 +4,13 @@ import (
 	"context"
 	"fmt"
 	"net/http"
-  "time"
-  
-  "go.opencensus.io/plugin/ochttp"
-  // "github.com/davecgh/go-spew/spew"
-  "github.com/fbessez/octo-org/github"
-  "github.com/fbessez/octo-org/models"
-  "github.com/fbessez/octo-org/config"
+	"time"
+
+	"go.opencensus.io/plugin/ochttp"
+	// "github.com/davecgh/go-spew/spew"
+	"github.com/fbessez/octo-org/config"
+	"github.com/fbessez/octo-org/github"
+	"github.com/fbessez/octo-org/models"
 )
 
 var redisKeyRepoNames = config.CONSTANTS.OrgName + "::repos"
@@ -22,9 +22,9 @@ func newGithubClient() *github.GithubClient {
 }
 
 func check(e error) {
-  if e != nil {
-     panic(e)
-  }
+	if e != nil {
+		panic(e)
+	}
 }
 
 func getRepoNames(ctx context.Context, forceRefresh bool) (repoNames []string, err error) {
@@ -112,13 +112,12 @@ func getUserCommits(orgStatsByUser models.OrgStatsByUser) (userCommits []*models
 		}
 
 		userCommits = append(userCommits, &models.UserCommits{
-																				GithubUsername: githubUsername,
-																				TotalCommits:   totalCommits,
-																				TotalAdditions: totalAdditions,
-																				TotalDeletions: totalDeletions,
-																			})
+			GithubUsername: githubUsername,
+			TotalCommits:   totalCommits,
+			TotalAdditions: totalAdditions,
+			TotalDeletions: totalDeletions,
+		})
 	}
-	
+
 	return
 }
-
